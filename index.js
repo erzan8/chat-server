@@ -12,13 +12,27 @@ app.use(function (req, res, next) {
 
 io.on('connection', function (socket) {
 
+    console.log('A user connected');
+
     socket.on('join', function(data){
+
         socket.join(data.room);
-        // console.log(data.user + ' joined the room : ' + data.room);
-        socket.broadcast.to(data.room).emit('new user joined', {user:data.user, message:' has joined this room.'});
+
+        console.log(data.user + ' joined the room : ' + data.room);
+
+        socket.broadcast.to(data.room).emit('new user joined', {user:data.user, message:' has joined the room.'});
     });
 
-    console.log('A user connected');
+    socket.on('leave', function(data){
+        
+        console.log(data.user + ' left the room : ' + data.room);
+        
+        socket.broadcast.to(data.room).emit('left room', {user:data.user, message:' has left the room.'});
+
+        socket.leave(data.room);
+    });
+
+
     socket.on('disconnect', function () {
         io.emit('disconnect', 'A user left the chat');
     });
