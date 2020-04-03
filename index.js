@@ -31,15 +31,17 @@ io.on('connection', function (socket) {
 
         socket.leave(data.room);
     });
+    //When server receive a chat message, send it to front
+    socket.on('message', function(data){
+        console.log(data);
+        io.in(data.room).emit('message', data);
+    });
 
 
     socket.on('disconnect', function () {
         io.emit('disconnect', 'A user left the chat');
     });
-//When server receive a chat message, send it to front
-    socket.on('message', function(msg){
-        io.emit('message', msg);
-    });
+
 });
 http.listen(port, function () {
     console.log('Server is listening');
