@@ -1,7 +1,7 @@
 const app = require('express')();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 
 app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -11,13 +11,13 @@ app.use(function (req, res, next) {
 });
 
 io.on('connection', function (socket) {
-    // socket.emit('connection', 'A user joined the chat');
 
     socket.on('join', function(data){
         socket.join(data.room);
-        console.group(data.user + ' joined the room : ' + data.room);
-        socket.broadcast.to(data.room).emit('new user joined', {user:data.user, message:'has joined this room.'})
-    })
+        // console.log(data.user + ' joined the room : ' + data.room);
+        socket.broadcast.to(data.room).emit('new user joined', {user:data.user, message:' has joined this room.'});
+    });
+
     console.log('A user connected');
     socket.on('disconnect', function () {
         io.emit('disconnect', 'A user left the chat');
