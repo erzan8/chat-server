@@ -1,6 +1,14 @@
 const app = require('express')();
 const http = require('http').createServer(app);
-var io = require('socket.io')(http);
+const io = require('socket.io')(http);
+const port = process.env.PORT || 3000;
+
+app.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, GET, PATCH, DELETE, OPTIONS');
+    next();
+});
 
 io.on('connection', function (socket) {
     // socket.emit('connection', 'A user joined the chat');
@@ -18,8 +26,7 @@ io.on('connection', function (socket) {
     socket.on('message', function(msg){
         io.emit('message', msg);
     });
-
 });
-http.listen(3000, function () {
-    console.log('listening on *:3000');
+http.listen(port, function () {
+    console.log('Server is listening');
 });
